@@ -70,17 +70,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 
-cp tesla.json db.json
-json-server --watch db.json
+### To run mock server
+json-server --watch db.json --port 3004
 npm i -g json-server
 
-Resources 
 Resources
-  http://localhost:3000/date
-  http://localhost:3000/tweet
-  http://localhost:3000/open
-  http://localhost:3000/high
-  http://localhost:3000/low
-  http://localhost:3000/close
-  http://localhost:3000/adj close
-  http://localhost:3000/volume
+   Resources
+  http://localhost:3004/date
+  http://localhost:3004/tweet
+  http://localhost:3004/open
+  http://localhost:3004/high
+  http://localhost:3004/low
+  http://localhost:3004/close
+  http://localhost:3004/adj close
+  http://localhost:3004/volume
