@@ -5,42 +5,50 @@ import classes from './chart.module.css';
 
 const TeslaChart = () => {
   const chartRef = useRef(null);
-  // const [date, setDates] = useState();
+  const chartRef1 = useRef(null);
+  const [dates, setDates] = useState();
+  const [tweets, setTweets] = useState();
+  const [closes, setCloses] = useState();
+
+  // const [combinedData, setCombinedData] = useState([]);
+
+  useEffect(async () => {
+    const resultDates = await axios.get('http://localhost:3004/date');
+    const tweetScale = 10;
+    setDates(Object.values(resultDates.data));
+    const resultTweets = await axios.get('http://localhost:3004/tweet');
+    setTweets(Object.values(resultTweets.data).map(x => x * tweetScale));
+    const resultCloses = await axios.get('http://localhost:3004/close'); 
+    setCloses(Object.values(resultCloses.data));
+    console.log(`resultCloses: ${JSON.stringify(Object.values(resultCloses.data))}`);    
+  }, [])
 
   useEffect(() => {
+    drawChart();
+  }, [closes, dates, tweets])
+
+  const drawChart = () => {
     const myChartRef = chartRef.current.getContext('2d');
-    let combinedData = [];
-    axios
-      .all([
-        axios.get('http://localhost:3004/date'),
-        axios.get('http://localhost:3004/tweet'),
-        axios.get('http://localhost:3004/close'),
-      ])
-      .then(
-        axios.spread((date, tweet, close) => {
-          combinedData.push(Object.values(date.data));
-          combinedData.push(Object.values(tweet.data));
-          combinedData.push(Object.values(close.data));
-          // Object.keys(date.data).forEach((key) => {
-          //   combinedData = [date.data[key], tweet.data[key], close.data[key],...]);
-          // });
-          // combinedData = [
-          //   Object.values(date.data),
-          //   Object.values(tweet.data),
-          //   Object.values(close.data),
-          // ];
-        })
-      );
-    console.log(combinedData);
     new Chart(myChartRef, {
-      type: 'line',
+      type: 'bar',
       data: {
-        labels: ['Jan', 'Feb'],
-        datasets: [{ label: 'Stock Prices', data: [10, 20, 30] }],
+        labels: dates,
+        datasets: [
+          { label: 'Stock Prices', backgroundColor: 'rgba(255, 99, 132, 1)', borderColor: 'rgba(255, 99, 132, 1)', data: closes, fill: true },
+          { label: 'Tweets', backgroundColor: 'rgba(255, 255, 132, 1)', borderColor: 'rgba(255, 255, 132, 1)', data: tweets, fill: true }
+        ],
       },
-      options: {},
+      options: {
+        scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true
+              }
+          }]
+        }
+      },
     });
-  }, []);
+  }
   return (
     <div className={classes.graphContainer}>
       <canvas id='myChart' ref={chartRef} />
